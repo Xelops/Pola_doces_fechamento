@@ -1,24 +1,20 @@
 import pandas as pd
 import os
+from datetime import datetime
 
-# Leitura da planilha na aba "Vendas"
 file_path = "base/Polá_Doces_2024.xlsx"
 df = pd.read_excel(file_path, sheet_name="Vendas")
 
-# Verificar nomes das colunas
-print("Colunas disponíveis na planilha:", df.columns)
-
-# Remover espaços extras dos nomes das colunas
 df.columns = df.columns.str.strip()
 
-# Filtrando por "Pago" igual a "Não"
 df_nao_Pago = df[df['Pago'] == 'Não']
 
-# Diretório para salvar os arquivos de saída
 output_dir = "resultado"
 os.makedirs(output_dir, exist_ok=True)
 
-# Iterando por cada cliente
+data_atual = datetime.now()
+mes_dia = data_atual.strftime("%m_%d")
+
 for cliente, df_cliente in df_nao_Pago.groupby('Cliente'):
     mensagem = f"Bom dia, tudo bem?\nQuinto dia útil chegouuu ksksksks\nTo aqui pra passar quanto ficou sua conta no *Polá Doces* este mês!\n\n"
 
@@ -32,8 +28,8 @@ for cliente, df_cliente in df_nao_Pago.groupby('Cliente'):
     mensagem += f"\n*Total=* R${valor_total:.2f}\n\n"
     mensagem += "Chave Pix: *549.249.088-51* Gustavo Polastrini da Cruz - Nubank\n"
 
-    # Salvando a mensagem em um arquivo .txt
-    file_name = f"{output_dir}/{cliente}.txt"
+    cliente_nome = cliente.replace(" ", "_")
+    file_name = f"{output_dir}/{cliente_nome}_{mes_dia}.txt"
     with open(file_name, "w", encoding="utf-8") as file:
         file.write(mensagem)
 
